@@ -6,6 +6,8 @@ import (
 	"job-application-api/internal/auth"
 	"job-application-api/internal/database"
 	"job-application-api/internal/handlers"
+	"job-application-api/internal/repository"
+	"job-application-api/internal/service"
 	"net/http"
 	"os"
 	"os/signal"
@@ -61,12 +63,22 @@ func startApp() error {
 	if err != nil {
 		return fmt.Errorf("database is not connected: %w ", err)
 	}
+	repo, err := repository.NewRepository(db)
+	if err != nil {
+		return err
+	}
+
+	sc, err := service.NewService(repo)
+	if err != nil {
+		return err
+	}
+
 	api := http.Server{
 		Addr:         ":8080",
 		ReadTimeout:  8000 * time.Second,
 		WriteTimeout: 800 * time.Second,
 		IdleTimeout:  800 * time.Second,
-		Handler:      handlers.API(a),
+		Handler:      handlers.API(a, sc),
 	}
 	serverError := make(chan error, 1)
 	go func() {
