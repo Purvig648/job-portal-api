@@ -22,6 +22,14 @@ func API(a *auth.Auth, sc service.UserService) *gin.Engine {
 	r.Use(middleware.Log(), gin.Recovery())
 	r.GET("/check", m.Authenticate((check)))
 	r.POST("/signup", h.SignUp)
+	r.POST("/login", h.Login)
+	r.POST("/addcompany", m.Authenticate(h.AddCompany))
+	r.GET("/viewcompany/:id", m.Authenticate(h.ViewCompany))
+	r.GET("/viewAllcompany", m.Authenticate(h.ViewAllCompanies))
+	r.POST("/addjob", m.Authenticate(h.AddJob))
+	r.GET("/viewJobByCid/:cid", m.Authenticate(h.ViewJobByCompanyId))
+	r.GET("/viewAllJobPostings", m.Authenticate(h.ViewAllJobs))
+	r.GET("/viewJobById/:id",m.Authenticate(h.ViewJobById))
 
 	return r
 }

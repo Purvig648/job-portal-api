@@ -68,7 +68,7 @@ func startApp() error {
 		return err
 	}
 
-	sc, err := service.NewService(repo)
+	sc, err := service.NewService(repo, a)
 	if err != nil {
 		return err
 	}
