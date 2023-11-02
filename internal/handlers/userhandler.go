@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"errors"
 	"job-application-api/internal/middleware"
 	"job-application-api/internal/models"
 	"job-application-api/internal/service"
@@ -14,6 +15,25 @@ import (
 
 type handler struct {
 	service service.UserService
+}
+
+func NewHandlerFunc(s service.UserService) (NewHandler, error) {
+	if s == nil {
+		return nil, errors.New("the service cannot be nil")
+	}
+	return &handler{service: s}, nil
+}
+
+type NewHandler interface {
+	SignUp(c *gin.Context)
+	Login(c *gin.Context)
+	ViewJobById(c *gin.Context)
+	ViewAllJobs(c *gin.Context)
+	ViewJobByCompanyId(c *gin.Context)
+	AddJob(c *gin.Context)
+	ViewAllCompanies(c *gin.Context)
+	AddCompany(c *gin.Context)
+	ViewCompany(c *gin.Context)
 }
 
 func (h *handler) Login(c *gin.Context) {

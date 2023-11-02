@@ -10,7 +10,7 @@ import (
 
 type Service struct {
 	UserRepo repository.UserRepo
-	a        *auth.Auth
+	a        auth.TokenAuth
 }
 
 type UserService interface {
@@ -25,7 +25,7 @@ type UserService interface {
 	ViewJobDetailsById(ctx context.Context, cid uint64) (models.Job, error)
 }
 
-func NewService(userRepo repository.UserRepo, a *auth.Auth) (UserService, error) {
+func NewService(userRepo repository.UserRepo, a auth.TokenAuth) (UserService, error) {
 	if userRepo == nil {
 		return nil, errors.New("interface cannot be nil")
 	}

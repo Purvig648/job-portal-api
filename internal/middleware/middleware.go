@@ -6,10 +6,10 @@ import (
 )
 
 type Mid struct {
-	a *auth.Auth
+	a auth.TokenAuth
 }
 
-func NewMid(a *auth.Auth) (Mid, error) {
+func NewMid(a auth.TokenAuth) (Mid, error) {
 	if a == nil {
 		return Mid{}, errors.New("auth can't be nil")
 	}

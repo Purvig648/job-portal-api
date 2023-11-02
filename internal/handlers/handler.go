@@ -10,14 +10,17 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func API(a *auth.Auth, sc service.UserService) *gin.Engine {
+func API(a auth.TokenAuth, sc service.UserService) *gin.Engine {
 	r := gin.New()
 	m, err := middleware.NewMid(a)
 	if err != nil {
 		log.Panic("middleware not setup")
+		return nil
 	}
-	h := handler{
-		service: sc,
+	h, err := NewHandlerFunc(sc)
+	if err != nil {
+		log.Panic("handler not setup")
+		return nil
 	}
 	r.Use(middleware.Log(), gin.Recovery())
 	r.GET("/check", m.Authenticate((check)))
@@ -29,7 +32,7 @@ func API(a *auth.Auth, sc service.UserService) *gin.Engine {
 	r.POST("/addjob", m.Authenticate(h.AddJob))
 	r.GET("/viewJobByCid/:cid", m.Authenticate(h.ViewJobByCompanyId))
 	r.GET("/viewAllJobPostings", m.Authenticate(h.ViewAllJobs))
-	r.GET("/viewJobById/:id",m.Authenticate(h.ViewJobById))
+	r.GET("/viewJobById/:id", m.Authenticate(h.ViewJobById))
 
 	return r
 }
