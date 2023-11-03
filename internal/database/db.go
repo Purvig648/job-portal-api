@@ -8,8 +8,8 @@ import (
 )
 
 func Open() (*gorm.DB, error) {
-	dsn := "host=localhost user=postgres password=admin dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
-	db, err := gorm.Open(postgres.Open(dsn))
+	database := "host=localhost user=postgres password=admin dbname=postgres port=5432 sslmode=disable TimeZone=Asia/Shanghai"
+	db, err := gorm.Open(postgres.Open(database))
 	if err != nil {
 		return nil, err
 	}

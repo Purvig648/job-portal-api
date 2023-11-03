@@ -26,7 +26,7 @@ func (h *handler) AddCompany(c *gin.Context) {
 	}
 	_, ok = ctx.Value(auth.Ctxkey).(jwt.RegisteredClaims)
 	if !ok {
-		log.Error().Str("Trace Id", traceid).Msg("login first")
+		log.Error().Str("Trace Id", traceid).Msg("login required")
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": http.StatusText(http.StatusUnauthorized)})
 		return
 	}
@@ -36,7 +36,7 @@ func (h *handler) AddCompany(c *gin.Context) {
 	if err != nil {
 		log.Error().Err(err).Str("trace id", traceid)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": "please provide valid name and location",
+			"error": "provide valid name and location",
 		})
 		return
 	}
@@ -45,7 +45,7 @@ func (h *handler) AddCompany(c *gin.Context) {
 	if err != nil {
 		log.Error().Err(err).Str("trace id", traceid)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": "please provide valid name and location",
+			"error": "provide valid name and location",
 		})
 		return
 	}
@@ -74,7 +74,7 @@ func (h *handler) ViewCompany(c *gin.Context) {
 	}
 	_, ok = ctx.Value(auth.Ctxkey).(jwt.RegisteredClaims)
 	if !ok {
-		log.Error().Str("Trace Id", traceid).Msg("login first")
+		log.Error().Str("Trace Id", traceid).Msg("login required")
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": http.StatusText(http.StatusUnauthorized)})
 		return
 	}
@@ -109,7 +109,7 @@ func (h *handler) ViewAllCompanies(c *gin.Context) {
 	}
 	_, ok = ctx.Value(auth.Ctxkey).(jwt.RegisteredClaims)
 	if !ok {
-		log.Error().Str("Trace Id", traceid).Msg("login first")
+		log.Error().Str("Trace Id", traceid).Msg("login required")
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": http.StatusText(http.StatusUnauthorized)})
 		return
 	}

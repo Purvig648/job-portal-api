@@ -18,14 +18,14 @@ import (
 )
 
 func main() {
-	err := startApp()
+	err := StartApplication()
 	if err != nil {
 		log.Panic().Err(err).Send()
 	}
 	log.Info().Msg("Welcome to Job Portal")
 }
-func startApp() error {
-	log.Info().Msg("Main: Started: Intilaizing authentication support")
+func StartApplication() error {
+	log.Info().Msg("Main: Started: Intilaizing authentication")
 	privatePEM, err := os.ReadFile("private.pem")
 	if err != nil {
 		return fmt.Errorf("reading the auth private key %w", err)
@@ -47,7 +47,7 @@ func startApp() error {
 		return fmt.Errorf("constructing auth %w", err)
 	}
 
-	log.Info().Msg("main : Started : Initializing db support")
+	log.Info().Msg("main : Started : Initializing db")
 	db, err := database.Open()
 	if err != nil {
 		return fmt.Errorf("connecting to db %w", err)
@@ -99,7 +99,6 @@ func startApp() error {
 			err := api.Close()
 			return fmt.Errorf("could not stop server gracefully %w", err)
 		}
-
 	}
 	return nil
 

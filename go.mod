@@ -8,6 +8,7 @@ require (
 	github.com/golang-jwt/jwt/v5 v5.0.0
 	github.com/google/uuid v1.3.1
 	github.com/rs/zerolog v1.31.0
+	go.uber.org/mock v0.3.0
 	golang.org/x/crypto v0.9.0
 	gorm.io/driver/postgres v1.5.3
 	gorm.io/gorm v1.25.5
