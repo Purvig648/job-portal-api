@@ -8,6 +8,8 @@ import (
 	"gorm.io/gorm"
 )
 
+//go:generate mockgen -source=repository.go -destination=repository_mock.go -package=repository
+
 type Repo struct {
 	DB *gorm.DB
 }
@@ -18,7 +20,7 @@ type UserRepo interface {
 	ViewCompany(ctx context.Context, cid uint64) (models.Company, error)
 	ViewAllCompanies(ctx context.Context) ([]models.Company, error)
 	CreateJob(ctx context.Context, jobData models.Job) (models.Job, error)
-	ViewJobs(ctx context.Context, cid uint64) ([]models.Job, error)
+	ViewJobByCid(ctx context.Context, cid uint64) ([]models.Job, error)
 	ViewJobPostings(ctx context.Context) ([]models.Job, error)
 	Viewjob(ctx context.Context, cid uint64) (models.Job, error)
 }
