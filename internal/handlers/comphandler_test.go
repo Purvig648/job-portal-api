@@ -96,7 +96,32 @@ func Test_handler_ViewCompany(t *testing.T) {
 				return c, rr, ms
 			},
 			expectedStatusCode: http.StatusBadRequest,
-			expectedResponse:   `{"error":"Bad Request"}`,
+			expectedResponse:   `{"error":"test service error"}`,
+		},
+		{
+			name: "success case",
+			setup: func() (*gin.Context, *httptest.ResponseRecorder, service.UserService) {
+				rr := httptest.NewRecorder()
+				c, _ := gin.CreateTestContext(rr)
+				httpRequest, _ := http.NewRequest(http.MethodGet, "http://test.com:8080", nil)
+				ctx := httpRequest.Context()
+				ctx = context.WithValue(ctx, middleware.TraceIdkey, "123")
+				ctx = context.WithValue(ctx, auth.Ctxkey, jwt.RegisteredClaims{})
+				httpRequest = httpRequest.WithContext(ctx)
+				c.Request = httpRequest
+				c.Params = append(c.Params, gin.Param{Key: "id", Value: "123"})
+				mc := gomock.NewController(t)
+				ms := mockmodels.NewMockUserService(mc)
+
+				ms.EXPECT().ViewCompanyDetails(c.Request.Context(), gomock.Any()).Return(models.Company{
+					Name:     "Teksystem",
+					Location: "Bangalore",
+				}, nil).AnyTimes()
+
+				return c, rr, ms
+			},
+			expectedStatusCode: http.StatusOK,
+			expectedResponse:   `{"ID":0,"CreatedAt":"0001-01-01T00:00:00Z","UpdatedAt":"0001-01-01T00:00:00Z","DeletedAt":null,"name":"Teksystem","location":"Bangalore"}`,
 		},
 		{
 			name: "failure",
@@ -113,12 +138,12 @@ func Test_handler_ViewCompany(t *testing.T) {
 				mc := gomock.NewController(t)
 				ms := mockmodels.NewMockUserService(mc)
 
-				ms.EXPECT().ViewCompanyDetails(c.Request.Context(), gomock.Any()).Return(models.Company{}, nil).AnyTimes()
+				ms.EXPECT().ViewCompanyDetails(c.Request.Context(), gomock.Any()).Return(models.Company{}, errors.New("test service error")).AnyTimes()
 
 				return c, rr, ms
 			},
 			expectedStatusCode: http.StatusBadRequest,
-			expectedResponse:   `{"error":"Bad Request"}`,
+			expectedResponse:   `{"error":"test service error"}`,
 		},
 	}
 	for _, tt := range tests {

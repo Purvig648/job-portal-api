@@ -77,7 +77,7 @@ func Test_handler_ViewJobById(t *testing.T) {
 			expectedResponse:   `{"error":"Bad Request"}`,
 		},
 		{
-			name: "error while fetching jobs from service",
+			name: "error while fetching jobs",
 			setup: func() (*gin.Context, *httptest.ResponseRecorder, service.UserService) {
 				rr := httptest.NewRecorder()
 				c, _ := gin.CreateTestContext(rr)
