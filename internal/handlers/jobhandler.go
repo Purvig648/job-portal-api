@@ -33,13 +33,14 @@ func (h *handler) ViewJobById(c *gin.Context) {
 
 	cid, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": http.StatusText(http.StatusBadRequest)})
+		return
 	}
 
 	jobData, err := h.service.ViewJobDetailsById(ctx, cid)
 	if err != nil {
 		log.Error().Err(err).Str("trace id", traceid)
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return
@@ -98,13 +99,14 @@ func (h *handler) ViewJobByCompanyId(c *gin.Context) {
 
 	cid, err := strconv.ParseUint(id, 10, 64)
 	if err != nil {
-		c.AbortWithStatusJSON(http.StatusBadRequest, http.StatusText(http.StatusBadRequest))
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": http.StatusText(http.StatusBadRequest)})
+		return
 	}
 
 	jobData, err := h.service.ViewJobDetails(ctx, cid)
 	if err != nil {
 		log.Error().Err(err).Str("trace id", traceid)
-		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"error": err.Error(),
 		})
 		return

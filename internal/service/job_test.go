@@ -25,7 +25,7 @@ func TestService_ViewJobDetailsById(t *testing.T) {
 		mockRepoResponse func() (models.Job, error)
 	}{
 		{
-			name: "error in db",
+			name: "error in db of ViewJobDetailsById",
 			args: args{
 				ctx: context.Background(),
 				cid: 11,
@@ -37,7 +37,7 @@ func TestService_ViewJobDetailsById(t *testing.T) {
 			},
 		},
 		{
-			name: "success",
+			name: "success for ViewJobDetailsById",
 			args: args{
 				ctx: context.Background(),
 				cid: 1,
@@ -83,7 +83,7 @@ func TestService_ViewJobDetails(t *testing.T) {
 		mockRepoResponse func() ([]models.Job, error)
 	}{
 		{
-			name: "error in db",
+			name: "error in db for ViewJobDetails",
 			args: args{
 				ctx: context.Background(),
 				cid: 1,
@@ -95,7 +95,7 @@ func TestService_ViewJobDetails(t *testing.T) {
 			},
 		},
 		{
-			name: "success",
+			name: "success for ViewJobDetails",
 			args: args{
 				ctx: context.Background(),
 				cid: 1,
@@ -152,7 +152,7 @@ func TestService_ViewAllJobPostings(t *testing.T) {
 		mockRepoResponse func() ([]models.Job, error)
 	}{
 		{
-			name: "error in db",
+			name: "error in db for ViewAllJobPostings",
 			args: args{
 				ctx: context.Background(),
 			},
@@ -163,7 +163,7 @@ func TestService_ViewAllJobPostings(t *testing.T) {
 			},
 		},
 		{
-			name: "success",
+			name: "success for ViewAllJobPostings",
 			args: args{
 				ctx: context.Background(),
 			},
@@ -229,7 +229,7 @@ func TestService_AddJobDetails(t *testing.T) {
 		mockRepoResponse func() (models.Job, error)
 	}{
 		{
-			name: "error in db",
+			name: "error in db for AddJobDetails",
 			args: args{
 				ctx: context.Background(),
 			},
@@ -240,7 +240,7 @@ func TestService_AddJobDetails(t *testing.T) {
 			},
 		},
 		{
-			name: "success",
+			name: "success for AddJobDetails",
 			args: args{
 				ctx: context.Background(),
 				jobData: models.Job{

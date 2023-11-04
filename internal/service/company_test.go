@@ -25,7 +25,7 @@ func TestService_AddCompanyDetails(t *testing.T) {
 		mockRepoResponse func() (models.Company, error)
 	}{
 		{
-			name: "error in db",
+			name: "error in db of AddCompanyDetails",
 			args: args{
 				ctx: context.Background(),
 			},
@@ -36,7 +36,7 @@ func TestService_AddCompanyDetails(t *testing.T) {
 			},
 		},
 		{
-			name: "success",
+			name: "success for AddCompanyDetails",
 			args: args{
 				ctx: context.Background(),
 				companyData: models.Company{
@@ -90,7 +90,7 @@ func TestService_ViewCompanyDetails(t *testing.T) {
 		mockRepoResponse func() (models.Company, error)
 	}{
 		{
-			name: "error in db",
+			name: "error in db of ViewCompanyDetails",
 			args: args{
 				ctx: context.Background(),
 			},
@@ -101,7 +101,7 @@ func TestService_ViewCompanyDetails(t *testing.T) {
 			},
 		},
 		{
-			name: "success",
+			name: "success for ViewCompanyDetails",
 			args: args{
 				ctx: context.Background(),
 				cid: 1,
@@ -152,7 +152,7 @@ func TestService_ViewAllCompanies(t *testing.T) {
 		mockRepoResponse func() ([]models.Company, error)
 	}{
 		{
-			name: "error in db",
+			name: "error in db of ViewAllCompanies",
 			args: args{
 				ctx: context.Background(),
 			},
@@ -163,7 +163,7 @@ func TestService_ViewAllCompanies(t *testing.T) {
 			},
 		},
 		{
-			name: "success",
+			name: "success for ViewAllCompanies",
 			args: args{
 				ctx: context.Background(),
 			},

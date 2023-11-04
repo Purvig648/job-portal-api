@@ -8,6 +8,8 @@ import (
 	"job-application-api/internal/repository"
 )
 
+//go:generate mockgen -source=service.go -destination=mockmodels/service_mock.go -package=mockmodels
+
 type Service struct {
 	UserRepo repository.UserRepo
 	a        auth.TokenAuth
