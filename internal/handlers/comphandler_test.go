@@ -10,6 +10,7 @@ import (
 	"job-application-api/internal/service"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -302,6 +303,27 @@ func Test_handler_AddCompany(t *testing.T) {
 			},
 			expectedStatusCode: http.StatusUnauthorized,
 			expectedResponse:   `{"error":"Unauthorized"}`,
+		},
+		{
+			name: "Success",
+			setup: func() (*gin.Context, *httptest.ResponseRecorder, service.UserService) {
+				rr := httptest.NewRecorder()
+				c, _ := gin.CreateTestContext(rr)
+				httpRequest, _ := http.NewRequest(http.MethodGet, "http://test.com:8080", strings.NewReader(`{"name":"Tek system","location":"mysore"}`))
+				ctx := httpRequest.Context()
+				ctx = context.WithValue(ctx, middleware.TraceIdkey, "123")
+				ctx = context.WithValue(ctx, auth.Ctxkey, jwt.RegisteredClaims{})
+				httpRequest = httpRequest.WithContext(ctx)
+				c.Request = httpRequest
+
+				mc := gomock.NewController(t)
+				ms := mockmodels.NewMockUserService(mc)
+				ms.EXPECT().AddCompanyDetails(gomock.Any(), gomock.Any()).Return(models.Company{}, nil).AnyTimes()
+
+				return c, rr, ms
+			},
+			expectedStatusCode: http.StatusOK,
+			expectedResponse:   `{"ID":0,"CreatedAt":"0001-01-01T00:00:00Z","UpdatedAt":"0001-01-01T00:00:00Z","DeletedAt":null,"name":"","location":""}`,
 		},
 	}
 	for _, tt := range tests {
