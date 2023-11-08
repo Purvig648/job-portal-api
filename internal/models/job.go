@@ -7,53 +7,53 @@ type Job struct {
 	Company         Company           `json:"-" gorm:"ForeignKey:cid"`
 	Cid             uint              `json:"cid"`
 	Jobname         string            `json:"jobname"`
-	MinNoticePeriod string            `json:"min_notice_period" validate:"required"`
-	MaxNoticePeriod string            `json:"max_notice_period" validate:"required"`
+	MinNoticePeriod string            `json:"minNoticePeriod" validate:"required"`
+	MaxNoticePeriod string            `json:"maxNoticePeriod" validate:"required"`
 	Description     string            `json:"description" validate:"required"`
-	MinExperience   string            `json:"min_experience" validate:"required"`
-	MaxExperience   string            `json:"max_experience" validate:"required"`
+	MinExperience   string            `json:"minExperience" validate:"required"`
+	MaxExperience   string            `json:"maxExperience" validate:"required"`
 	Location        []Location        `json:"location" gorm:"many2many:job_location;"`
-	TechnologyStack []TechnologyStack `json:"technology_stack" gorm:"many2many:job_techstack;"`
+	TechnologyStack []TechnologyStack `json:"technologyStacks" gorm:"many2many:job_techstack;"`
 	Qualifications  []Qualification   `json:"qualifications" gorm:"many2many:job_qualification;"`
-	Shift           []Shift           `json:"shift" gorm:"many2many:job_shift;" `
-	Jobtype         string            `json:"jobtype" validate:"required"`
+	Shift           []Shift           `json:"shifts" gorm:"many2many:job_shift;" `
+	Jobtype         string            `json:"jobType" validate:"required"`
 }
 type ResponseJob struct {
-	Id uint `json:"responseId"`
+	Id uint `json:"id"`
 }
 
 type Location struct {
 	gorm.Model
-	PlaceName string `json:"place_name"`
+	PlaceName string `json:"placeName"`
 }
 
 type TechnologyStack struct {
 	gorm.Model
-	StackName string `json:"stack_name"`
+	StackName string `json:"stackName"`
 }
 
 type Qualification struct {
 	gorm.Model
-	QualificationRequired string `json:"qualification_required"`
+	QualificationRequired string `json:"qualificationRequired"`
 }
 
 type Shift struct {
 	gorm.Model
-	ShiftType string `json:"shift_type"`
+	ShiftType string `json:"shiftTypes"`
 }
 
 type NewJob struct {
-	Company         Company           `json:"-" `
-	Cid             uint              `json:"cid"`
-	Jobname         string            `json:"jobname"`
-	MinNoticePeriod string            `json:"min_notice_period"`
-	MaxNoticePeriod string            `json:"max_notice_period"`
-	Description     string            `json:"description"`
-	MinExperience   string            `json:"min_experience"`
-	MaxExperience   string            `json:"max_experience"`
-	Location        []Location        `json:"location"`
-	TechnologyStack []TechnologyStack `json:"technology_stack"`
-	Qualifications  []Qualification   `json:"qualifications"`
-	Shift           []Shift           `json:"shift"`
-	Jobtype         string            `json:"jobtype"`
+	Company         Company `json:"-" `
+	Cid             uint    `json:"cid"`
+	Jobname         string  `json:"jobname"`
+	MinNoticePeriod string  `json:"minNoticePeriod"`
+	MaxNoticePeriod string  `json:"maxNoticePeriod"`
+	Description     string  `json:"description"`
+	MinExperience   string  `json:"minExperience"`
+	MaxExperience   string  `json:"maxExperience"`
+	Location        []uint  `json:"location"`
+	TechnologyStack []uint  `json:"technologyStacks"`
+	Qualifications  []uint  `json:"qualifications"`
+	Shift           []uint  `json:"shifts"`
+	Jobtype         string  `json:"jobType"`
 }
