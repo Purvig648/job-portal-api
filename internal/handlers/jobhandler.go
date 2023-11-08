@@ -132,7 +132,7 @@ func (h *handler) AddJob(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": http.StatusText(http.StatusUnauthorized)})
 		return
 	}
-	var jobData models.Job
+	var jobData models.NewJob
 
 	err := json.NewDecoder(c.Request.Body).Decode(&jobData)
 	if err != nil {
@@ -142,7 +142,7 @@ func (h *handler) AddJob(c *gin.Context) {
 		})
 		return
 	}
-	jobData, err = h.service.AddJobDetails(ctx, jobData)
+	job, err := h.service.AddJobDetails(ctx, jobData)
 	if err != nil {
 		log.Error().Err(err).Str("trace id", traceid)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
@@ -150,5 +150,5 @@ func (h *handler) AddJob(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, jobData)
+	c.JSON(http.StatusOK, job)
 }

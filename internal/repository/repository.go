@@ -19,7 +19,7 @@ type UserRepo interface {
 	CreateCompany(ctx context.Context, companyData models.Company) (models.Company, error)
 	ViewCompany(ctx context.Context, cid uint64) (models.Company, error)
 	ViewAllCompanies(ctx context.Context) ([]models.Company, error)
-	CreateJob(ctx context.Context, jobData models.Job) (models.Job, error)
+	CreateJob(ctx context.Context, jobData models.Job) (models.ResponseJob, error)
 	ViewJobByCid(ctx context.Context, cid uint64) ([]models.Job, error)
 	ViewJobPostings(ctx context.Context) ([]models.Job, error)
 	Viewjob(ctx context.Context, cid uint64) (models.Job, error)

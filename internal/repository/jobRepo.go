@@ -41,11 +41,13 @@ func (r *Repo) ViewJobByCid(ctx context.Context, cid uint64) ([]models.Job, erro
 
 }
 
-func (r *Repo) CreateJob(ctx context.Context, jobData models.Job) (models.Job, error) {
+func (r *Repo) CreateJob(ctx context.Context, jobData models.Job) (models.ResponseJob, error) {
 	result := r.DB.Create(&jobData)
 	if result.Error != nil {
 		log.Info().Err(result.Error).Send()
-		return models.Job{}, errors.New("could not create the job")
+		return models.ResponseJob{}, errors.New("could not create the job")
 	}
-	return jobData, nil
+	return models.ResponseJob{
+		Id: jobData.ID,
+	}, nil
 }

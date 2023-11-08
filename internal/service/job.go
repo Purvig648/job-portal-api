@@ -5,12 +5,27 @@ import (
 	"job-application-api/internal/models"
 )
 
-func (s *Service) AddJobDetails(ctx context.Context, jobData models.Job) (models.Job, error) {
-	jobData, err := s.UserRepo.CreateJob(ctx, jobData)
-	if err != nil {
-		return models.Job{}, err
+func (s *Service) AddJobDetails(ctx context.Context, jobData models.NewJob) (models.ResponseJob, error) {
+
+	createjobdetails := models.Job{
+		Cid:             jobData.Cid,
+		Jobname:         jobData.Jobname,
+		Location:        jobData.Location,
+		MinExperience:   jobData.MinExperience,
+		MaxExperience:   jobData.MaxExperience,
+		MinNoticePeriod: jobData.MinNoticePeriod,
+		MaxNoticePeriod: jobData.MaxNoticePeriod,
+		TechnologyStack: jobData.TechnologyStack,
+		Qualifications:  jobData.Qualifications,
+		Shift:           jobData.Shift,
+		Jobtype:         jobData.Jobtype,
+		Description:     jobData.Description,
 	}
-	return jobData, nil
+	job, err := s.UserRepo.CreateJob(ctx, createjobdetails)
+	if err != nil {
+		return models.ResponseJob{}, err
+	}
+	return job, nil
 }
 func (s *Service) ViewJobDetailsById(ctx context.Context, cid uint64) (models.Job, error) {
 	jobData, err := s.UserRepo.Viewjob(ctx, cid)

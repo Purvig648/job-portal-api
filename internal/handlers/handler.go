@@ -30,9 +30,10 @@ func API(a auth.TokenAuth, sc service.UserService) *gin.Engine {
 	r.GET("/api/companies/:id", m.Authenticate(h.ViewCompany))
 	r.GET("/api/companies", m.Authenticate(h.ViewAllCompanies))
 	r.POST("/api/companies/:cid/jobs", m.Authenticate(h.AddJob))
-	r.GET("/api/companies/:cid/jobs", m.Authenticate(h.ViewJobByCompanyId))
+	//r.GET("/api/companies/:cid/jobs", m.Authenticate(h.ViewJobByCompanyId))
 	r.GET("/api/jobs", m.Authenticate(h.ViewAllJobs))
 	r.GET("/api/jobs/:id", m.Authenticate(h.ViewJobById))
+	//r.POST("/api/process",m.Authenticate(h.Process))
 
 	return r
 }
