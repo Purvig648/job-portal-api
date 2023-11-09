@@ -10,13 +10,17 @@ import (
 
 func (r *Repo) Viewjob(ctx context.Context, cid uint64) (models.Job, error) {
 	var jobData models.Job
-	result := r.DB.Where("id = ?", cid).First(&jobData)
+	result := r.DB.Preload("Location").
+		Preload("TechnologyStack").
+		Preload("Qualifications").
+		Preload("Shift").
+		Where("id = ?", cid).Find(&jobData)
+
 	if result.Error != nil {
 		log.Info().Err(result.Error).Send()
-		return models.Job{}, errors.New("could not find the job id")
+		return models.Job{}, errors.New("could not create the jobs")
 	}
 	return jobData, nil
-
 }
 
 func (r *Repo) ViewJobPostings(ctx context.Context) ([]models.Job, error) {

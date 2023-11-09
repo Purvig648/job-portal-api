@@ -2,11 +2,48 @@ package service
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"job-application-api/internal/models"
+	"strconv"
+	"sync"
 
 	"gorm.io/gorm"
 )
 
+func (s *Service) FilterApplications(ctx context.Context, jobApplication []models.RespondJApplicant) ([]models.RespondJApplicant, error) {
+	var FilterJobData []models.RespondJApplicant
+	jobdetail, err := s.UserRepo.Viewjob(ctx, uint64(1))
+	if err != nil {
+		return nil, errors.New("not able to get  jobs from database")
+	}
+
+	ch := make(chan models.RespondJApplicant)
+	wg := new(sync.WaitGroup)
+
+	for _, v := range jobApplication {
+		wg.Add(1)
+		go func(v models.RespondJApplicant) {
+			defer wg.Done()
+			bool, singleApplication := checkApplicantsCriteria(v, jobdetail)
+			if bool {
+				ch <- singleApplication
+			}
+
+		}(v)
+	}
+	go func() {
+		wg.Wait()
+		close(ch)
+	}()
+
+	for data := range ch {
+		FilterJobData = append(FilterJobData, data)
+	}
+
+	return FilterJobData, nil
+
+}
 func (s *Service) AddJobDetails(ctx context.Context, jobData models.NewJob) (models.ResponseJob, error) {
 
 	createjobdetails := models.Job{
@@ -84,4 +121,80 @@ func (s *Service) ViewJobDetails(ctx context.Context, cid uint64) ([]models.Job,
 		return nil, err
 	}
 	return jobData, nil
+}
+func checkApplicantsCriteria(v models.RespondJApplicant, jobdetail models.Job) (bool, models.RespondJApplicant) {
+	MinNoticePeriod, err := strconv.Atoi(jobdetail.MinNoticePeriod)
+	fmt.Println(MinNoticePeriod)
+	if err != nil {
+		panic("error while conversion min notice  period data from hr posting")
+	}
+	MaxNoticePeriod, err := strconv.Atoi(jobdetail.MaxNoticePeriod)
+	fmt.Println(MaxNoticePeriod)
+	if err != nil {
+		panic("error while conversion max notice period data from hr posting")
+	}
+	applicantNoticePeriod, err := strconv.Atoi(v.Jobs.NoticePeriod)
+	if err != nil {
+		panic("error while conversion notice period from applicant")
+	}
+
+	if (applicantNoticePeriod < MinNoticePeriod) || (applicantNoticePeriod > MaxNoticePeriod) {
+		return false, models.RespondJApplicant{}
+	}
+	count := 0
+	for _, v1 := range v.Jobs.Location {
+		count = 0
+		for _, v2 := range jobdetail.Location {
+			if v1 == v2.ID {
+				count++
+
+			}
+		}
+	}
+	if count == 0 {
+		return false, models.RespondJApplicant{}
+	}
+
+	if count == 0 {
+		return false, models.RespondJApplicant{}
+	}
+	count = 0
+	for _, v1 := range v.Jobs.Qualifications {
+		count = 0
+		for _, v2 := range jobdetail.Qualifications {
+			if v1 == v2.ID {
+				count++
+			}
+
+		}
+	}
+	if count == 0 {
+		return false, models.RespondJApplicant{}
+	}
+
+	count = 0
+	for _, v1 := range v.Jobs.Shift {
+		count = 0
+		for _, v2 := range jobdetail.Shift {
+			if v1 == v2.ID {
+				count++
+			}
+
+		}
+	}
+	if count == 0 {
+		return false, models.RespondJApplicant{}
+	}
+
+	count = 0
+	for _, v1 := range v.Jobs.TechnologyStack {
+		count = 0
+		for _, v2 := range jobdetail.TechnologyStack {
+			if v1 == v2.ID {
+				count++
+			}
+
+		}
+	}
+	return true, v
 }
