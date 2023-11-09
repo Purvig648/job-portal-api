@@ -178,7 +178,7 @@ func (h *handler) AddJob(c *gin.Context) {
 	if err != nil {
 		log.Error().Err(err).Str("trace id", traceid)
 		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
-			"error": "provide valid id ,jobrole and salary",
+			"error": "provide valid details",
 		})
 		return
 	}

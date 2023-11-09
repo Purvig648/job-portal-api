@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
 	"job-application-api/internal/models"
 	"strconv"
 	"sync"
@@ -124,23 +123,38 @@ func (s *Service) ViewJobDetails(ctx context.Context, cid uint64) ([]models.Job,
 }
 func checkApplicantsCriteria(v models.RespondJApplicant, jobdetail models.Job) (bool, models.RespondJApplicant) {
 	MinNoticePeriod, err := strconv.Atoi(jobdetail.MinNoticePeriod)
-	fmt.Println(MinNoticePeriod)
 	if err != nil {
-		panic("error while conversion min notice  period data from hr posting")
+		return false, models.RespondJApplicant{}
 	}
 	MaxNoticePeriod, err := strconv.Atoi(jobdetail.MaxNoticePeriod)
-	fmt.Println(MaxNoticePeriod)
 	if err != nil {
-		panic("error while conversion max notice period data from hr posting")
+		return false, models.RespondJApplicant{}
 	}
 	applicantNoticePeriod, err := strconv.Atoi(v.Jobs.NoticePeriod)
 	if err != nil {
-		panic("error while conversion notice period from applicant")
+		return false, models.RespondJApplicant{}
 	}
 
 	if (applicantNoticePeriod < MinNoticePeriod) || (applicantNoticePeriod > MaxNoticePeriod) {
 		return false, models.RespondJApplicant{}
 	}
+	MinExperience, err := strconv.Atoi(jobdetail.MinExperience)
+	if err != nil {
+		return false, models.RespondJApplicant{}
+	}
+	MaxExperience, err := strconv.Atoi(jobdetail.MaxExperience)
+	if err != nil {
+		return false, models.RespondJApplicant{}
+	}
+	applicantExperience, err := strconv.Atoi(v.Jobs.Experience)
+	if err != nil {
+		return false, models.RespondJApplicant{}
+
+	}
+	if (applicantExperience < MinExperience) || (applicantExperience > MaxExperience) {
+		return false, models.RespondJApplicant{}
+	}
+
 	count := 0
 	for _, v1 := range v.Jobs.Location {
 		count = 0
