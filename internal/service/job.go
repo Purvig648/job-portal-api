@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"job-application-api/internal/models"
 	"strconv"
 	"sync"
@@ -16,7 +17,6 @@ func (s *Service) FilterApplications(ctx context.Context, jobApplication []model
 	if err != nil {
 		return nil, errors.New("not able to get  jobs from database")
 	}
-
 	ch := make(chan models.RespondJApplicant)
 	wg := new(sync.WaitGroup)
 
@@ -28,7 +28,6 @@ func (s *Service) FilterApplications(ctx context.Context, jobApplication []model
 			if bool {
 				ch <- singleApplication
 			}
-
 		}(v)
 	}
 	go func() {
@@ -123,6 +122,7 @@ func (s *Service) ViewJobDetails(ctx context.Context, cid uint64) ([]models.Job,
 }
 func checkApplicantsCriteria(v models.RespondJApplicant, jobdetail models.Job) (bool, models.RespondJApplicant) {
 	MinNoticePeriod, err := strconv.Atoi(jobdetail.MinNoticePeriod)
+	fmt.Println(MinNoticePeriod, err)
 	if err != nil {
 		return false, models.RespondJApplicant{}
 	}

@@ -9,7 +9,6 @@
 package repository
 
 import (
-	"fmt"
 	context "context"
 	models "job-application-api/internal/models"
 	reflect "reflect"
@@ -71,10 +70,10 @@ func (mr *MockUserRepoMockRecorder) CreateCompany(ctx, companyData any) *gomock.
 }
 
 // CreateJob mocks base method.
-func (m *MockUserRepo) CreateJob(ctx context.Context, jobData models.Job) (models.Job, error) {
+func (m *MockUserRepo) CreateJob(ctx context.Context, jobData models.Job) (models.ResponseJob, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateJob", ctx, jobData)
-	ret0, _ := ret[0].(models.Job)
+	ret0, _ := ret[0].(models.ResponseJob)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -87,7 +86,6 @@ func (mr *MockUserRepoMockRecorder) CreateJob(ctx, jobData any) *gomock.Call {
 
 // CreateUser mocks base method.
 func (m *MockUserRepo) CreateUser(userData models.User) (models.User, error) {
-	fmt.Println("calling 2nd")
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateUser", userData)
 	ret0, _ := ret[0].(models.User)
@@ -97,7 +95,6 @@ func (m *MockUserRepo) CreateUser(userData models.User) (models.User, error) {
 
 // CreateUser indicates an expected call of CreateUser.
 func (mr *MockUserRepoMockRecorder) CreateUser(userData any) *gomock.Call {
-	fmt.Println("calling 1st")
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateUser", reflect.TypeOf((*MockUserRepo)(nil).CreateUser), userData)
 }
@@ -164,7 +161,6 @@ func (mr *MockUserRepoMockRecorder) ViewJobPostings(ctx any) *gomock.Call {
 
 // Viewjob mocks base method.
 func (m *MockUserRepo) Viewjob(ctx context.Context, cid uint64) (models.Job, error) {
-	fmt.Println(" caling 1st  view job")
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Viewjob", ctx, cid)
 	ret0, _ := ret[0].(models.Job)
@@ -174,7 +170,6 @@ func (m *MockUserRepo) Viewjob(ctx context.Context, cid uint64) (models.Job, err
 
 // Viewjob indicates an expected call of Viewjob.
 func (mr *MockUserRepoMockRecorder) Viewjob(ctx, cid any) *gomock.Call {
-	fmt.Println(" caling 2nd  view job")
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Viewjob", reflect.TypeOf((*MockUserRepo)(nil).Viewjob), ctx, cid)
 }
