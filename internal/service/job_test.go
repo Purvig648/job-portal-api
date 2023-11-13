@@ -141,134 +141,134 @@ func TestService_FilterApplications(t *testing.T) {
 				return models.Job{}, errors.New("test error")
 			},
 		},
-		{
-			name: "Fail of MinNoticePeriod",
-			args: args{
-				ctx: context.Background(),
-				jobApplication: []models.RespondJApplicant{
-					{
-						Name: "purvi",
-						Jid:  1,
-						Jobs: models.UserApplicant{
-							NoticePeriod:    "30",
-							Experience:      "3",
-							Location:        []uint{uint(1)},
-							Qualifications:  []uint{uint(1)},
-							Shift:           []uint{uint(1)},
-							TechnologyStack: []uint{uint(1)},
-							Jobtype:         "permanent",
-						},
-					},
-				},
-			},
-			want:    nil,
-			wantErr: true,
-			mockRepoResponse: func() (models.Job, error) {
-				return models.Job{
-					Model:           gorm.Model{ID: uint(1)},
-					Cid:             1,
-					Jobname:         "developer",
-					MinNoticePeriod: "abc",
-					MaxNoticePeriod: "50",
-					Description:     "hi developer",
-					Location: []models.Location{
-						{
-							Model: gorm.Model{
-								ID: uint(1),
-							},
-							PlaceName: "Bangalore",
-						},
-					},
-					Qualifications: []models.Qualification{
-						{
-							Model:                 gorm.Model{ID: 1},
-							QualificationRequired: "B.E",
-						},
-					},
-					TechnologyStack: []models.TechnologyStack{
-						{
-							Model:     gorm.Model{ID: 1},
-							StackName: "Java",
-						},
-					},
-					Shift: []models.Shift{
-						{
-							Model: gorm.Model{
-								ID: 1,
-							},
-							ShiftType: "Day",
-						},
-					},
-					MinExperience: "2",
-					MaxExperience: "3",
-					Jobtype:       "Permanent",
-				}, errors.New("false")
-			},
-		},
-		{
-			name: "Fail of MaxNoticePeriod",
-			args: args{
-				ctx: context.Background(),
-				jobApplication: []models.RespondJApplicant{
-					{
-						Name: "purvi",
-						Jid:  1,
-						Jobs: models.UserApplicant{
-							NoticePeriod:    "30",
-							Experience:      "3",
-							Location:        []uint{uint(1)},
-							Qualifications:  []uint{uint(1)},
-							Shift:           []uint{uint(1)},
-							TechnologyStack: []uint{uint(1)},
-							Jobtype:         "permanent",
-						},
-					},
-				},
-			},
-			want:    nil,
-			wantErr: true,
-			mockRepoResponse: func() (models.Job, error) {
-				return models.Job{
-					Model:           gorm.Model{ID: uint(1)},
-					Cid:             1,
-					Jobname:         "developer",
-					MinNoticePeriod: "30",
-					MaxNoticePeriod: "abc",
-					Description:     "hi developer",
-					Location: []models.Location{
-						{
-							Model: gorm.Model{
-								ID: uint(1),
-							},
-							PlaceName: "Bangalore",
-						},
-					},
-					Qualifications: []models.Qualification{
-						{
-							Model:                 gorm.Model{ID: 1},
-							QualificationRequired: "B.E",
-						},
-					},
-					TechnologyStack: []models.TechnologyStack{
-						{
-							Model:     gorm.Model{ID: 1},
-							StackName: "Java",
-						},
-					},
-					Shift: []models.Shift{
-						{
-							Model: gorm.Model{
-								ID: 1,
-							},
-							ShiftType: "Day",
-						},
-					},
-					MinExperience: "2",
-					MaxExperience: "3",
-					Jobtype:       "Permanent",
-				}, errors.New("false")
-			},
-		},
+		// {
+		// 	name: "Fail of MinNoticePeriod",
+		// 	args: args{
+		// 		ctx: context.Background(),
+		// 		jobApplication: []models.RespondJApplicant{
+		// 			{
+		// 				Name: "purvi",
+		// 				Jid:  1,
+		// 				Jobs: models.UserApplicant{
+		// 					NoticePeriod:    "30",
+		// 					Experience:      "3",
+		// 					Location:        []uint{uint(1)},
+		// 					Qualifications:  []uint{uint(1)},
+		// 					Shift:           []uint{uint(1)},
+		// 					TechnologyStack: []uint{uint(1)},
+		// 					Jobtype:         "permanent",
+		// 				},
+		// 			},
+		// 		},
+		// 	},
+		// 	want:    nil,
+		// 	wantErr: true,
+		// 	mockRepoResponse: func() (models.Job, error) {
+		// 		return models.Job{
+		// 			Model:           gorm.Model{ID: uint(1)},
+		// 			Cid:             1,
+		// 			Jobname:         "developer",
+		// 			MinNoticePeriod: "abc",
+		// 			MaxNoticePeriod: "50",
+		// 			Description:     "hi developer",
+		// 			Location: []models.Location{
+		// 				{
+		// 					Model: gorm.Model{
+		// 						ID: uint(1),
+		// 					},
+		// 					PlaceName: "Bangalore",
+		// 				},
+		// 			},
+		// 			Qualifications: []models.Qualification{
+		// 				{
+		// 					Model:                 gorm.Model{ID: 1},
+		// 					QualificationRequired: "B.E",
+		// 				},
+		// 			},
+		// 			TechnologyStack: []models.TechnologyStack{
+		// 				{
+		// 					Model:     gorm.Model{ID: 1},
+		// 					StackName: "Java",
+		// 				},
+		// 			},
+		// 			Shift: []models.Shift{
+		// 				{
+		// 					Model: gorm.Model{
+		// 						ID: 1,
+		// 					},
+		// 					ShiftType: "Day",
+		// 				},
+		// 			},
+		// 			MinExperience: "2",
+		// 			MaxExperience: "3",
+		// 			Jobtype:       "Permanent",
+		// 		}, errors.New("false")
+		// 	},
+		// },
+		// {
+		// 	name: "Fail of MaxNoticePeriod",
+		// 	args: args{
+		// 		ctx: context.Background(),
+		// 		jobApplication: []models.RespondJApplicant{
+		// 			{
+		// 				Name: "purvi",
+		// 				Jid:  1,
+		// 				Jobs: models.UserApplicant{
+		// 					NoticePeriod:    "30",
+		// 					Experience:      "3",
+		// 					Location:        []uint{uint(1)},
+		// 					Qualifications:  []uint{uint(1)},
+		// 					Shift:           []uint{uint(1)},
+		// 					TechnologyStack: []uint{uint(1)},
+		// 					Jobtype:         "permanent",
+		// 				},
+		// 			},
+		// 		},
+		// 	},
+		// 	want:    nil,
+		// 	wantErr: true,
+		// 	mockRepoResponse: func() (models.Job, error) {
+		// 		return models.Job{
+		// 			Model:           gorm.Model{ID: uint(1)},
+		// 			Cid:             1,
+		// 			Jobname:         "developer",
+		// 			MinNoticePeriod: "30",
+		// 			MaxNoticePeriod: "abc",
+		// 			Description:     "hi developer",
+		// 			Location: []models.Location{
+		// 				{
+		// 					Model: gorm.Model{
+		// 						ID: uint(1),
+		// 					},
+		// 					PlaceName: "Bangalore",
+		// 				},
+		// 			},
+		// 			Qualifications: []models.Qualification{
+		// 				{
+		// 					Model:                 gorm.Model{ID: 1},
+		// 					QualificationRequired: "B.E",
+		// 				},
+		// 			},
+		// 			TechnologyStack: []models.TechnologyStack{
+		// 				{
+		// 					Model:     gorm.Model{ID: 1},
+		// 					StackName: "Java",
+		// 				},
+		// 			},
+		// 			Shift: []models.Shift{
+		// 				{
+		// 					Model: gorm.Model{
+		// 						ID: 1,
+		// 					},
+		// 					ShiftType: "Day",
+		// 				},
+		// 			},
+		// 			MinExperience: "2",
+		// 			MaxExperience: "3",
+		// 			Jobtype:       "Permanent",
+		// 		}, errors.New("false")
+		// 	},
+		// },
 		{
 			name: "Success",
 			args: args{

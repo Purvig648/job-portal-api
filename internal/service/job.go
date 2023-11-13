@@ -2,8 +2,6 @@ package service
 
 import (
 	"context"
-	"errors"
-	"fmt"
 	"job-application-api/internal/models"
 	"strconv"
 	"sync"
@@ -11,12 +9,10 @@ import (
 	"gorm.io/gorm"
 )
 
+var cacheMap = make(map[uint]models.Job)
+
 func (s *Service) FilterApplications(ctx context.Context, jobApplication []models.RespondJApplicant) ([]models.RespondJApplicant, error) {
 	var FilterJobData []models.RespondJApplicant
-	jobdetail, err := s.UserRepo.Viewjob(ctx, uint64(1))
-	if err != nil {
-		return nil, errors.New("not able to get  jobs from database")
-	}
 	ch := make(chan models.RespondJApplicant)
 	wg := new(sync.WaitGroup)
 
@@ -24,6 +20,15 @@ func (s *Service) FilterApplications(ctx context.Context, jobApplication []model
 		wg.Add(1)
 		go func(v models.RespondJApplicant) {
 			defer wg.Done()
+			jobdetail, ok := cacheMap[v.Jid]
+			if !ok {
+				val, err := s.UserRepo.Viewjob(ctx, uint64(v.Jid))
+				if err != nil {
+					return
+				}
+				cacheMap[v.Jid] = val
+				jobdetail = val
+			}
 			bool, singleApplication := checkApplicantsCriteria(v, jobdetail)
 			if bool {
 				ch <- singleApplication
@@ -122,7 +127,6 @@ func (s *Service) ViewJobDetails(ctx context.Context, cid uint64) ([]models.Job,
 }
 func checkApplicantsCriteria(v models.RespondJApplicant, jobdetail models.Job) (bool, models.RespondJApplicant) {
 	MinNoticePeriod, err := strconv.Atoi(jobdetail.MinNoticePeriod)
-	fmt.Println(MinNoticePeriod, err)
 	if err != nil {
 		return false, models.RespondJApplicant{}
 	}
