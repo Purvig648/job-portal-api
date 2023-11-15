@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"job-application-api/internal/auth"
+	"job-application-api/internal/caching"
 	"job-application-api/internal/models"
 	"job-application-api/internal/repository"
 )
@@ -28,7 +29,7 @@ type UserService interface {
 	FilterApplications(ctx context.Context, jobApplication []models.RespondJApplicant) ([]models.RespondJApplicant, error)
 }
 
-func NewService(userRepo repository.UserRepo, a auth.TokenAuth) (UserService, error) {
+func NewService(userRepo repository.UserRepo, a auth.TokenAuth, c caching.Cache) (UserService, error) {
 	if userRepo == nil {
 		return nil, errors.New("interface cannot be nil")
 	}

@@ -4,7 +4,9 @@ import (
 	"context"
 	"fmt"
 	"job-application-api/internal/auth"
+	"job-application-api/internal/caching"
 	"job-application-api/internal/database"
+	redisdb "job-application-api/internal/database/redis"
 	"job-application-api/internal/handlers"
 	"job-application-api/internal/repository"
 	"job-application-api/internal/service"
@@ -47,6 +49,10 @@ func StartApplication() error {
 		return fmt.Errorf("constructing auth %w", err)
 	}
 
+	client := redisdb.InitRedisClient()
+
+	cache := caching.NewRdbCache(client)
+
 	log.Info().Msg("main : Started : Initializing db")
 	db, err := database.Open()
 	if err != nil {
@@ -68,7 +74,7 @@ func StartApplication() error {
 		return err
 	}
 
-	sc, err := service.NewService(repo, a)
+	sc, err := service.NewService(repo, a, cache)
 	if err != nil {
 		return err
 	}
@@ -80,6 +86,7 @@ func StartApplication() error {
 		IdleTimeout:  800 * time.Second,
 		Handler:      handlers.API(a, sc),
 	}
+
 	serverError := make(chan error, 1)
 	go func() {
 		log.Info().Str("port", api.Addr).Msg("main: API listening")
