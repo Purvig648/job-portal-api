@@ -14,6 +14,7 @@ import (
 type Service struct {
 	UserRepo repository.UserRepo
 	a        auth.TokenAuth
+	rdb      caching.Cache
 }
 
 type UserService interface {
@@ -36,6 +37,7 @@ func NewService(userRepo repository.UserRepo, a auth.TokenAuth, c caching.Cache)
 	return &Service{
 		UserRepo: userRepo,
 		a:        a,
+		rdb:      c,
 	}, nil
 
 }

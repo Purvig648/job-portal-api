@@ -6,10 +6,9 @@ import (
 	"strconv"
 	"sync"
 
+	"github.com/go-redis/redis"
 	"gorm.io/gorm"
 )
-
-var cacheMap = make(map[uint]models.Job)
 
 func (s *Service) FilterApplications(ctx context.Context, jobApplication []models.RespondJApplicant) ([]models.RespondJApplicant, error) {
 	var FilterJobData []models.RespondJApplicant
@@ -20,16 +19,20 @@ func (s *Service) FilterApplications(ctx context.Context, jobApplication []model
 		wg.Add(1)
 		go func(v models.RespondJApplicant) {
 			defer wg.Done()
-			jobdetail, ok := cacheMap[v.Jid]
-			if !ok {
-				val, err := s.UserRepo.Viewjob(ctx, uint64(v.Jid))
+			var jobData models.Job
+			jobData, err := s.rdb.FetchCache(ctx, v.Jid)
+			if err == redis.Nil {
+				Data, err := s.UserRepo.Viewjob(ctx, uint64(v.Jid))
 				if err != nil {
 					return
 				}
-				cacheMap[v.Jid] = val
-				jobdetail = val
+				err = s.rdb.AddCache(ctx, v.Jid, Data)
+				if err != nil {
+					return
+				}
+				jobData = Data
 			}
-			bool, singleApplication := checkApplicantsCriteria(v, jobdetail)
+			bool, singleApplication := checkApplicantsCriteria(v, jobData)
 			if bool {
 				ch <- singleApplication
 			}
