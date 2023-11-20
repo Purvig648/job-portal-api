@@ -10,6 +10,7 @@ import (
 	"github.com/go-redis/redis"
 )
 
+//go:generate mockgen -source=cache.go -destination=cache_mock.go -package=caching
 type Redis struct {
 	client *redis.Client
 }
