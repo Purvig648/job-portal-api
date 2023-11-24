@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"job-application-api/internal/auth"
 	"job-application-api/internal/caching"
+	"job-application-api/internal/config"
 	"job-application-api/internal/database"
 	redisdb "job-application-api/internal/database/redis"
 	"job-application-api/internal/handlers"
@@ -27,19 +28,23 @@ func main() {
 	log.Info().Msg("Welcome to Job Portal")
 }
 func StartApplication() error {
+	cfg := config.GetConfig()
 	log.Info().Msg("Main: Started: Intilaizing authentication")
-	privatePEM, err := os.ReadFile("private.pem")
-	if err != nil {
-		return fmt.Errorf("reading the auth private key %w", err)
-	}
+	// privatePEM, err := os.ReadFile("private.pem")
+	// if err != nil {
+	// 	return fmt.Errorf("reading the auth private key %w", err)
+	// }
+
+	privatePEM := []byte(cfg.AuthConfig.PrivateKey)
 	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(privatePEM)
 	if err != nil {
 		return fmt.Errorf("parsing private key %w", err)
 	}
-	publicPEM, err := os.ReadFile("pubkey.pem")
-	if err != nil {
-		return fmt.Errorf("reading the auth public key %w", err)
-	}
+	// publicPEM, err := os.ReadFile("pubkey.pem")
+	// if err != nil {
+	// 	return fmt.Errorf("reading the auth public key %w", err)
+	// }
+	publicPEM := []byte(cfg.AuthConfig.PublicKey)
 	publicKey, err := jwt.ParseRSAPublicKeyFromPEM(publicPEM)
 	if err != nil {
 		return fmt.Errorf("parsing public key %w", err)
@@ -49,12 +54,12 @@ func StartApplication() error {
 		return fmt.Errorf("constructing auth %w", err)
 	}
 
-	client := redisdb.InitRedisClient()
+	client := redisdb.InitRedisClient(cfg.RedisConfig)
 
 	cache := caching.NewRdbCache(client)
 
 	log.Info().Msg("main : Started : Initializing db")
-	db, err := database.Open()
+	db, err := database.Open(cfg.DataConfig)
 	if err != nil {
 		return fmt.Errorf("connecting to db %w", err)
 	}
@@ -80,10 +85,10 @@ func StartApplication() error {
 	}
 
 	api := http.Server{
-		Addr:         ":8080",
-		ReadTimeout:  8000 * time.Second,
-		WriteTimeout: 800 * time.Second,
-		IdleTimeout:  800 * time.Second,
+		Addr:         fmt.Sprintf(":%s", cfg.AppConfig.AppPort),
+		ReadTimeout:  time.Duration(cfg.AppConfig.AppReadTimeout),
+		WriteTimeout: time.Duration(cfg.AppConfig.AppWriteTimeout),
+		IdleTimeout:  time.Duration(cfg.AppConfig.AppIdleTimeout),
 		Handler:      handlers.API(a, sc),
 	}
 

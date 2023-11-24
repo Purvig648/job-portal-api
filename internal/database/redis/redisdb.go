@@ -1,14 +1,16 @@
 package redisdb
 
 import (
+	"job-application-api/internal/config"
+
 	"github.com/go-redis/redis"
 )
 
-func InitRedisClient() *redis.Client {
+func InitRedisClient(cfg config.RedisConfig) *redis.Client {
 	client := redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
-		Password: "",
-		DB:       0,
+		Addr:     cfg.RedisPort,
+		Password: cfg.RedisPassword,
+		DB:       cfg.RedisDb,
 	})
 	return client
 }
