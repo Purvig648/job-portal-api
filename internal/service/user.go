@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"errors"
+	"fmt"
 	"job-application-api/internal/models"
 	"job-application-api/internal/pkg"
 	"strconv"
@@ -11,6 +12,26 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/rs/zerolog/log"
 )
+
+func (s *Service) VerifyUser(ctx context.Context, data models.ForgetPass) error {
+	userDetails, err := s.UserRepo.CheckEmail(ctx, data.Email)
+	if err != nil {
+		return errors.New("email not found")
+	}
+	if userDetails.DOB != data.DateOfBirth {
+		return errors.New("incorrect data of birth,can't send otp")
+	}
+	otp, err := pkg.GenerateAndSendOtp(data.Email)
+	if err != nil {
+		return errors.New("could not send otp")
+	}
+	err = s.rdb.AddToCacheOtp(ctx, data.Email, otp)
+	if err != nil {
+		fmt.Println("]][]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]", err)
+		return errors.New("could not cache")
+	}
+	return nil
+}
 
 func (s *Service) UserLogin(ctx context.Context, userData models.UserLogin) (string, error) {
 	var userDetails models.User
@@ -50,6 +71,7 @@ func (s *Service) UserSignup(ctx context.Context, userData models.UserSignup) (m
 	userDetails := models.User{
 		Name:         userData.Name,
 		Email:        userData.Email,
+		DOB:          userData.DOB,
 		PasswordHash: hashedPass,
 	}
 	userDetails, err = s.UserRepo.CreateUser(userDetails)

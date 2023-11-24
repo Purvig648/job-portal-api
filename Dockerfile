@@ -12,6 +12,7 @@ COPY . .
 RUN go build -o server cmd/job-portal-api/main.go
 
 FROM scratch
+COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 WORKDIR /app
 
@@ -20,5 +21,7 @@ COPY --from=builder /app/server .
 COPY --from=builder /app/private.pem .
 
 COPY --from=builder /app/pubkey.pem .
+
+EXPOSE 8080
 
 CMD [ "./server" ]

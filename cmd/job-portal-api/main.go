@@ -3,9 +3,9 @@ package main
 import (
 	"context"
 	"fmt"
+	"job-application-api/config"
 	"job-application-api/internal/auth"
 	"job-application-api/internal/caching"
-	"job-application-api/internal/config"
 	"job-application-api/internal/database"
 	redisdb "job-application-api/internal/database/redis"
 	"job-application-api/internal/handlers"
@@ -36,6 +36,7 @@ func StartApplication() error {
 	// }
 
 	privatePEM := []byte(cfg.AuthConfig.PrivateKey)
+
 	privateKey, err := jwt.ParseRSAPrivateKeyFromPEM(privatePEM)
 	if err != nil {
 		return fmt.Errorf("parsing private key %w", err)
@@ -53,11 +54,6 @@ func StartApplication() error {
 	if err != nil {
 		return fmt.Errorf("constructing auth %w", err)
 	}
-
-	client := redisdb.InitRedisClient(cfg.RedisConfig)
-
-	cache := caching.NewRdbCache(client)
-
 	log.Info().Msg("main : Started : Initializing db")
 	db, err := database.Open(cfg.DataConfig)
 	if err != nil {
@@ -74,6 +70,10 @@ func StartApplication() error {
 	if err != nil {
 		return fmt.Errorf("database is not connected: %w ", err)
 	}
+
+	client := redisdb.InitRedisClient(cfg.RedisConfig)
+
+	cache := caching.NewRdbCache(client)
 	repo, err := repository.NewRepository(db)
 	if err != nil {
 		return err
@@ -83,12 +83,11 @@ func StartApplication() error {
 	if err != nil {
 		return err
 	}
-
 	api := http.Server{
-		Addr:         fmt.Sprintf(":%s", cfg.AppConfig.AppPort),
-		ReadTimeout:  time.Duration(cfg.AppConfig.AppReadTimeout),
-		WriteTimeout: time.Duration(cfg.AppConfig.AppWriteTimeout),
-		IdleTimeout:  time.Duration(cfg.AppConfig.AppIdleTimeout),
+		Addr:         fmt.Sprintf("%s:%s", cfg.AppConfig.AppHost, cfg.AppConfig.AppPort),
+		ReadTimeout:  time.Duration(cfg.AppConfig.AppReadTimeout) * time.Second,
+		WriteTimeout: time.Duration(cfg.AppConfig.AppWriteTimeout) * time.Second,
+		IdleTimeout:  time.Duration(cfg.AppConfig.AppIdleTimeout) * time.Second,
 		Handler:      handlers.API(a, sc),
 	}
 
@@ -113,5 +112,4 @@ func StartApplication() error {
 		}
 	}
 	return nil
-
 }

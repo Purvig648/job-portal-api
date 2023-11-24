@@ -28,6 +28,7 @@ type UserService interface {
 	ViewAllJobPostings(ctx context.Context) ([]models.Job, error)
 	ViewJobDetailsById(ctx context.Context, cid uint64) (models.Job, error)
 	FilterApplications(ctx context.Context, jobApplication []models.RespondJApplicant) ([]models.RespondJApplicant, error)
+	VerifyUser(ctx context.Context, data models.ForgetPass) error
 }
 
 func NewService(userRepo repository.UserRepo, a auth.TokenAuth, c caching.Cache) (UserService, error) {

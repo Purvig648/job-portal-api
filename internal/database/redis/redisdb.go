@@ -1,7 +1,7 @@
 package redisdb
 
 import (
-	"job-application-api/internal/config"
+	"job-application-api/config"
 
 	"github.com/go-redis/redis"
 )

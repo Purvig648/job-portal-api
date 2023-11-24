@@ -34,6 +34,7 @@ func API(a auth.TokenAuth, sc service.UserService) *gin.Engine {
 	r.GET("/api/jobs", m.Authenticate(h.ViewAllJobs))
 	r.GET("/api/jobs/:id", m.Authenticate(h.ViewJobById))
 	r.POST("/api/process", m.Authenticate(h.ProcessApplication))
+	r.POST("/api/sendotp", h.SendOtp)
 
 	return r
 }

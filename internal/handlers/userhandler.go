@@ -35,6 +35,39 @@ type NewHandler interface {
 	AddCompany(c *gin.Context)
 	ViewCompany(c *gin.Context)
 	ProcessApplication(c *gin.Context)
+	SendOtp(c *gin.Context)
+}
+
+func (h *handler) SendOtp(c *gin.Context) {
+	ctx := c.Request.Context()
+	traceid, ok := ctx.Value(middleware.TraceIdkey).(string)
+	if !ok {
+		log.Error().Msg("traceid missing from context")
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"error": http.StatusText(http.StatusInternalServerError),
+		})
+		return
+	}
+	var otpData models.ForgetPass
+
+	err := json.NewDecoder(c.Request.Body).Decode(&otpData)
+	if err != nil {
+		log.Error().Err(err).Str("trace id", traceid)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": "please provide valid email and dataofbirth",
+		})
+		return
+	}
+	err = h.service.VerifyUser(ctx, otpData)
+	if err != nil {
+		log.Error().Err(err).Str("trace id", traceid)
+		c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{
+			"error": err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Email sent succesfully"})
+
 }
 
 func (h *handler) Login(c *gin.Context) {
@@ -110,7 +143,5 @@ func (h *handler) SignUp(c *gin.Context) {
 		})
 		return
 	}
-
 	c.JSON(http.StatusOK, userDetails)
-
 }

@@ -17,12 +17,17 @@ type Redis struct {
 type Cache interface {
 	AddCache(ctx context.Context, jid uint, jobData models.Job) error
 	FetchCache(ctx context.Context, jid uint) (models.Job, error)
+	AddToCacheOtp(ctx context.Context, email string, otp string) error
 }
 
 func NewRdbCache(client *redis.Client) Cache {
 	return &Redis{
 		client: client,
 	}
+}
+func (r *Redis) AddToCacheOtp(ctx context.Context, email string, otp string) error {
+	err := r.client.Set(email, otp, 1*time.Minute).Err()
+	return err
 }
 
 func (r *Redis) AddCache(ctx context.Context, jid uint, jobData models.Job) error {

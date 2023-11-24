@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"job-application-api/internal/config"
+	"job-application-api/config"
 	"job-application-api/internal/models"
 
 	"gorm.io/driver/postgres"

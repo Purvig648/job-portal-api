@@ -6,12 +6,14 @@ type User struct {
 	gorm.Model
 	Name         string `json:"name"`
 	Email        string `json:"email" gorm:"unique"`
+	DOB          string `json:"dateOfBirth"`
 	PasswordHash string `json:"-"`
 }
 
 type UserSignup struct {
 	Name     string `json:"name" validate:"required"`
 	Email    string `json:"email" validate:"required,email"`
+	DOB      string `json:"dateOfBirth" validate:"required"`
 	Password string `json:"password" validate:"required"`
 }
 type UserLogin struct {
